@@ -1,6 +1,6 @@
 # qBittorrent WebUI Configuration
 QB_ENABLED = True
-QB_URL = "http://home.hidka.com:6500"
+QB_URL = "http://localhost:6500"
 QB_USER = "hidka"
 QB_PASS = "YanGxinXINx98Z5~"
 

@@ -4,7 +4,9 @@ from contextlib import contextmanager
 from typing import Optional, Iterable, Dict, Any, Tuple
 from datetime import datetime
 from qb import get_torrent_hash_from_file
+from qb import get_filename_from_path
 from config import QB_ENABLED
+from moviepilot import cleanup_transfer_task
 
 class Database:
     def __init__(self, db_path: str):
@@ -124,6 +126,9 @@ class Database:
 
         # 若删除媒体文件，同步删除具有相同 inode 的源文件（硬链接）
         if category == "media":
+
+            cleanup_transfer_task(get_filename_from_path(path))
+
             sources = list(self.get_by_devino(dev, ino, "source"))
             for s in sources:
                 spath = s["path"]

@@ -4,13 +4,13 @@ import os
 from datetime import datetime, timedelta
 from urllib.parse import quote
 
-LOGIN_URL = "http://home.hidka.com:3001/api/v1/login/access-token" 
+LOGIN_URL = "http://localhost:3000/api/v1/login/access-token" 
 USERNAME = "admin"
 PASSWORD = "YanGxinXINx98Z5~"
-TOKEN_FILE = "access_token.json"  # 令牌保存文件
-QUERY_BASE_URL = "http://home.hidka.com:3000/api/v1/history/transfer"
-QUERY_DETAIL_URL = "http://home.hidka.com:3000/api/v1/history/transfer"  # 详情查询URL
-DELETE_TRANSFER_URL = "http://home.hidka.com:3000/api/v1/history/transfer"  # 删除传输记录URL
+TOKEN_FILE = "~/Media/access_token.json"  # 令牌保存文件
+QUERY_BASE_URL = "http://localhost:3000/api/v1/history/transfer"
+QUERY_DETAIL_URL = "http://localhost:3000/api/v1/history/transfer"  # 详情查询URL
+DELETE_TRANSFER_URL = "http://localhost:3000/api/v1/history/transfer"  # 删除传输记录URL
 
 def save_token(token, expires_in=3600):
     """保存令牌到文件"""
