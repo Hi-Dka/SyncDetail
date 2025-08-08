@@ -6,7 +6,6 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler, FileCreatedEvent, FileModifiedEvent, FileMovedEvent, FileDeletedEvent
 
 from db import Database  # 修改为绝对导入
-from moviepilot import cleanup_transfer_task
 
 class _Handler(FileSystemEventHandler):
     def __init__(self, q: queue.Queue):
@@ -75,7 +74,6 @@ def start_watch(db: Database, roots_source: Iterable[str], roots_media: Iterable
                     path = item[1]
                     print(f"[WATCH] Processing delete: {path}")
                     db.handle_delete(path)
-                    handle_file_deleted(db, categorize, path)
             except Exception as e:
                 print(f"[WATCH] Error processing event {item}: {e}")
             finally:
@@ -86,31 +84,3 @@ def start_watch(db: Database, roots_source: Iterable[str], roots_media: Iterable
     observer.start()
     print("[WATCH] Observer started")
     return observer, q, t
-
-def handle_file_deleted(db, categorize, event_path):
-    """Handle file deletion events"""
-    category = categorize(event_path)
-    if not category:
-        return
-    
-    filename = os.path.basename(event_path)
-    
-    # Remove from database
-    if category == "media":
-        print(f"[DELETE] Media file deleted: {event_path}")
-        db.remove_media_file(event_path)
-        
-        # Cleanup MoviePilot transfer task for this media file
-        print(f"[CLEANUP] Starting MoviePilot cleanup for: {filename}")
-        try:
-            cleanup_result = cleanup_transfer_task(filename, deletesrc=False, deletedest=False)
-            if cleanup_result.get('success', False):
-                print(f"[CLEANUP] MoviePilot cleanup successful: {cleanup_result['message']}")
-            else:
-                print(f"[CLEANUP] MoviePilot cleanup failed: {cleanup_result.get('message', 'Unknown error')}")
-        except Exception as e:
-            print(f"[CLEANUP] MoviePilot cleanup error: {e}")
-            
-    elif category == "source":
-        print(f"[DELETE] Source file deleted: {event_path}")
-        db.remove_source_file(event_path)
