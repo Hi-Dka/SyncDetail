@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "inotify-indexer"
+version = "1.0.0"
+description = "Inotify-based indexer for source/media with SQLite sync"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "watchdog>=2.1.0",
+]
+
+[project.scripts]
+inotify-indexer = "main:main"

@@ -49,80 +49,49 @@ def parse_args():
 
 # ---------------- MAIN ----------------
 def main():
+    # 确保当前目录在 sys.path 中
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
     args = parse_args()
-    src_dirs = _norm_dirs(args.source)
-    media_dirs = _norm_dirs(args.media)
+    
+    # 如果没有通过命令行参数指定目录，使用配置文件中的默认值
+    if not args.source and not args.media:
+        from config import MEDIA_PATH, SOURCE_PATH, DB_PATH
+        src_dirs = [os.path.expanduser(SOURCE_PATH)]
+        media_dirs = [os.path.expanduser(MEDIA_PATH)]
+        db_path = os.path.expanduser(DB_PATH)
+    else:
+        src_dirs = _norm_dirs(args.source)
+        media_dirs = _norm_dirs(args.media)
+        db_path = args.db
+        
     if not src_dirs and not media_dirs:
         print("No directories provided. Use --source and/or --media.", file=sys.stderr)
         sys.exit(2)
 
-    db = Database(args.db)
-    categorize = make_categorizer(src_dirs, media_dirs)
-
-    # 启动时全量刷新
-    full_refresh(db, src_dirs, media_dirs, categorize)
-
-    # 启动监控
-    observer, q, t = start_watch(db, src_dirs, media_dirs, categorize)
-
-    # 优雅退出
-    def shutdown(signum, frame):
-        try:
-            observer.stop()
-            observer.join(timeout=5)
-        finally:
-            q.put(None)
-            t.join(timeout=5)
-            sys.exit(0)
-
-    signal.signal(signal.SIGINT, shutdown)
-    signal.signal(signal.SIGTERM, shutdown)
-
-    # 阻塞主线程
-    try:
-        signal.pause()
-    except AttributeError:
-        # Windows 无 signal.pause，循环等待（虽然本项目偏 Linux）
-        while True:
-            signal.sigwait({signal.SIGINT, signal.SIGTERM})
-
-if __name__ == "__main__":
-    # 确保当前目录在 sys.path 中
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-    # 使用新的Database类
-    print(f"[INFO] Initializing database at {os.path.expanduser(DB_PATH)}")
-    db = Database(os.path.expanduser(DB_PATH))
-    
-    # 设置源文件和媒体文件目录
-    src_dirs = [os.path.expanduser(SOURCE_PATH)]
-    media_dirs = [os.path.expanduser(MEDIA_PATH)]
+    print(f"[INFO] Initializing database at {db_path}")
+    db = Database(db_path)
     
     print(f"[INFO] Source directories: {src_dirs}")
     print(f"[INFO] Media directories: {media_dirs}")
     
-    # 检查目录是否存在
+    # 检查目录是否存在，不存在则创建
     for src_dir in src_dirs:
         if not os.path.exists(src_dir):
             print(f"[WARNING] Source directory does not exist: {src_dir}")
             os.makedirs(src_dir, exist_ok=True)
             print(f"[INFO] Created source directory: {src_dir}")
-        else:
-            print(f"[INFO] Source directory exists: {src_dir}")
     
     for media_dir in media_dirs:
         if not os.path.exists(media_dir):
             print(f"[WARNING] Media directory does not exist: {media_dir}")
             os.makedirs(media_dir, exist_ok=True)
             print(f"[INFO] Created media directory: {media_dir}")
-        else:
-            print(f"[INFO] Media directory exists: {media_dir}")
-    
+
     categorize = make_categorizer(src_dirs, media_dirs)
 
     print("[SCAN] Starting full refresh scan...")
     try:
-        # 使用新的全量刷新逻辑
         full_refresh(db, src_dirs, media_dirs, categorize)
         print("[SCAN] Full refresh completed successfully")
     except Exception as e:
@@ -133,7 +102,6 @@ if __name__ == "__main__":
 
     print(f"[WATCHING] Starting file watcher...")
     try:
-        # 使用新的监控逻辑
         observer, q, t = start_watch(db, src_dirs, media_dirs, categorize)
         print(f"[WATCHING] Now watching: {', '.join(src_dirs + media_dirs)}")
     except Exception as e:
@@ -163,3 +131,6 @@ if __name__ == "__main__":
             time.sleep(1)
     except KeyboardInterrupt:
         shutdown(None, None)
+
+if __name__ == "__main__":
+    main()

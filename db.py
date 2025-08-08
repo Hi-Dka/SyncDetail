@@ -5,6 +5,7 @@ from typing import Optional, Iterable, Dict, Any, Tuple
 from datetime import datetime
 from qb import get_torrent_hash_from_file
 from config import QB_ENABLED
+from moviepilot import cleanup_transfer_task
 
 class Database:
     def __init__(self, db_path: str):
@@ -152,3 +153,41 @@ class Database:
                     # 文件可能已不存在或权限问题，继续清理 DB
                     pass
                 self.delete_by_path(spath)
+
+    def remove_media_file(self, file_path):
+        """Remove media file from database and cleanup MoviePilot"""
+        filename = os.path.basename(file_path)
+        
+        # Remove from database
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM media_files WHERE path = ?", (file_path,))
+            deleted_rows = cursor.rowcount
+            
+        if deleted_rows > 0:
+            print(f"[DB] Removed media file from database: {file_path}")
+            
+            # Trigger MoviePilot cleanup
+            print(f"[CLEANUP] Starting MoviePilot cleanup for: {filename}")
+            try:
+                cleanup_result = cleanup_transfer_task(filename, deletesrc=False, deletedest=False)
+                if cleanup_result.get('success', False):
+                    print(f"[CLEANUP] MoviePilot cleanup successful: {cleanup_result['message']}")
+                else:
+                    print(f"[CLEANUP] MoviePilot cleanup failed: {cleanup_result.get('message', 'Unknown error')}")
+            except Exception as e:
+                print(f"[CLEANUP] MoviePilot cleanup error: {e}")
+        else:
+            print(f"[DB] Media file not found in database: {file_path}")
+    
+    def remove_source_file(self, file_path):
+        """Remove source file from database"""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM source_files WHERE path = ?", (file_path,))
+            deleted_rows = cursor.rowcount
+            
+        if deleted_rows > 0:
+            print(f"[DB] Removed source file from database: {file_path}")
+        else:
+            print(f"[DB] Source file not found in database: {file_path}")
