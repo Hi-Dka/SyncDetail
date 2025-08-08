@@ -3,6 +3,8 @@ import sqlite3
 from contextlib import contextmanager
 from typing import Optional, Iterable, Dict, Any, Tuple
 from datetime import datetime
+from qb import get_torrent_hash_from_file
+from config import QB_ENABLED
 
 class Database:
     def __init__(self, db_path: str):
@@ -127,7 +129,25 @@ class Database:
                 spath = s["path"]
                 try:
                     if os.path.exists(spath) and os.path.isfile(spath):
+                        # 在删除源文件前，先处理 qBittorrent 任务（如果启用）
+                        if QB_ENABLED:
+                            print(f"[QB] Processing qBittorrent task for file: {os.path.basename(spath)}")
+                            try:
+                                result = get_torrent_hash_from_file(spath)
+                                if result[0]:  # 如果找到了对应的种子
+                                    torrent_hash, file_index, torrent_deleted = result
+                                    if torrent_deleted:
+                                        print(f"[QB] Successfully removed torrent task: {torrent_hash[:8]}...")
+                                    else:
+                                        print(f"[QB] Set file priority to 0 for torrent: {torrent_hash[:8]}... (torrent kept - has other files)")
+                                else:
+                                    print(f"[QB] No matching torrent found for file: {os.path.basename(spath)}")
+                            except Exception as qb_error:
+                                print(f"[QB] Error processing qBittorrent task: {qb_error}")
+                        
+                        print(f"[DELETE] Removing source file: {os.path.basename(spath)}")
                         os.remove(spath)
+                        print(f"[DELETE] Source file removed successfully")
                 except Exception:
                     # 文件可能已不存在或权限问题，继续清理 DB
                     pass

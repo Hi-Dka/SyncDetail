@@ -11,11 +11,7 @@ from watchdog.events import FileSystemEventHandler
 from db import Database
 from scanner import full_refresh
 from watcher import start_watch
-
-# ---------------- CONFIG ----------------
-MEDIA_PATH = os.path.expanduser('~/Media/plex')  # 要监听的路径
-SOURCE_PATH = '~/Media/source'               # 源文件路径
-DB_PATH = os.path.expanduser('~/Media/file_links.db')  # 确保 ~ 被正确解析为主目录
+from config import MEDIA_PATH, SOURCE_PATH, DB_PATH
 
 def _norm_dirs(dirs: List[str]) -> List[str]:
     out = []
@@ -95,11 +91,12 @@ if __name__ == "__main__":
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
     # 使用新的Database类
-    db = Database(DB_PATH)
+    print(f"[INFO] Initializing database at {os.path.expanduser(DB_PATH)}")
+    db = Database(os.path.expanduser(DB_PATH))
     
     # 设置源文件和媒体文件目录
     src_dirs = [os.path.expanduser(SOURCE_PATH)]
-    media_dirs = [MEDIA_PATH]
+    media_dirs = [os.path.expanduser(MEDIA_PATH)]
     
     print(f"[INFO] Source directories: {src_dirs}")
     print(f"[INFO] Media directories: {media_dirs}")
