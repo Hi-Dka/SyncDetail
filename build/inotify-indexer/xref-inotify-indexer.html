@@ -15,7 +15,7 @@
 
 <div class="node">
   <a name="main.py"></a>
-  <a target="code" href="/home/hidka/project/inotify/main.py" type="text/plain"><tt>main.py</tt></a>
+  <a target="code" href="/home/hidka/project/inotify/app/main.py" type="text/plain"><tt>main.py</tt></a>
 <span class="moduletype">Script</span>  <div class="import">
 imports:
     <a href="#_collections_abc">_collections_abc</a>
@@ -174,6 +174,7 @@ imports:
  &#8226;   <a href="#reprlib">reprlib</a>
  &#8226;   <a href="#scanner">scanner</a>
  &#8226;   <a href="#signal">signal</a>
+ &#8226;   <a href="#sqlite3">sqlite3</a>
  &#8226;   <a href="#sre_compile">sre_compile</a>
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
@@ -184,6 +185,7 @@ imports:
  &#8226;   <a href="#types">types</a>
  &#8226;   <a href="#typing">typing</a>
  &#8226;   <a href="#warnings">warnings</a>
+ &#8226;   <a href="#watchdog">watchdog</a>
  &#8226;   <a href="#watchdog.events">watchdog.events</a>
  &#8226;   <a href="#watchdog.observers">watchdog.observers</a>
  &#8226;   <a href="#watcher">watcher</a>
@@ -3626,7 +3628,7 @@ imported by:
 
 <div class="node">
   <a name="config"></a>
-  <a target="code" href="/home/hidka/project/inotify/config.py" type="text/plain"><tt>config</tt></a>
+  <a target="code" href="/home/hidka/project/inotify/app/config.py" type="text/plain"><tt>config</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imported by:
     <a href="#db">db</a>
@@ -4006,6 +4008,7 @@ imported by:
  &#8226;   <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#http.server">http.server</a>
+ &#8226;   <a href="#moviepilot">moviepilot</a>
  &#8226;   <a href="#requests.models">requests.models</a>
  &#8226;   <a href="#requests.sessions">requests.sessions</a>
  &#8226;   <a href="#setuptools._vendor.tomli._re">setuptools._vendor.tomli._re</a>
@@ -4021,12 +4024,13 @@ imported by:
 
 <div class="node">
   <a name="db"></a>
-  <a target="code" href="/home/hidka/project/inotify/db.py" type="text/plain"><tt>db</tt></a>
+  <a target="code" href="/home/hidka/project/inotify/app/db.py" type="text/plain"><tt>db</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#config">config</a>
  &#8226;   <a href="#contextlib">contextlib</a>
  &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#moviepilot">moviepilot</a>
  &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#qb">qb</a>
  &#8226;   <a href="#sqlite3">sqlite3</a>
@@ -8917,6 +8921,7 @@ imported by:
  &#8226;   <a href="#json.decoder">json.decoder</a>
  &#8226;   <a href="#json.encoder">json.encoder</a>
  &#8226;   <a href="#json.scanner">json.scanner</a>
+ &#8226;   <a href="#moviepilot">moviepilot</a>
  &#8226;   <a href="#qb">qb</a>
  &#8226;   <a href="#requests.compat">requests.compat</a>
  &#8226;   <a href="#setuptools._vendor.importlib_metadata">setuptools._vendor.importlib_metadata</a>
@@ -9233,6 +9238,26 @@ imported by:
  &#8226;   <a href="#setuptools.config.pyprojecttoml">setuptools.config.pyprojecttoml</a>
  &#8226;   <a href="#setuptools.dist">setuptools.dist</a>
  &#8226;   <a href="#setuptools.msvc">setuptools.msvc</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="moviepilot"></a>
+  <a target="code" href="/home/hidka/project/inotify/app/moviepilot.py" type="text/plain"><tt>moviepilot</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#datetime">datetime</a>
+ &#8226;   <a href="#json">json</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#requests">requests</a>
+ &#8226;   <a href="#urllib.parse">urllib.parse</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#db">db</a>
 
   </div>
 
@@ -10267,6 +10292,7 @@ imported by:
  &#8226;   <a href="#lzma">lzma</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#mimetypes">mimetypes</a>
+ &#8226;   <a href="#moviepilot">moviepilot</a>
  &#8226;   <a href="#multiprocessing.connection">multiprocessing.connection</a>
  &#8226;   <a href="#multiprocessing.context">multiprocessing.context</a>
  &#8226;   <a href="#multiprocessing.forkserver">multiprocessing.forkserver</a>
@@ -11201,7 +11227,7 @@ imported by:
 
 <div class="node">
   <a name="qb"></a>
-  <a target="code" href="/home/hidka/project/inotify/qb.py" type="text/plain"><tt>qb</tt></a>
+  <a target="code" href="/home/hidka/project/inotify/app/qb.py" type="text/plain"><tt>qb</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#config">config</a>
@@ -11620,7 +11646,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#qb">qb</a>
+    <a href="#moviepilot">moviepilot</a>
+ &#8226;   <a href="#qb">qb</a>
  &#8226;   <a href="#requests">requests</a>
  &#8226;   <a href="#requests.__version__">requests.__version__</a>
  &#8226;   <a href="#requests._internal_utils">requests._internal_utils</a>
@@ -12108,7 +12135,7 @@ imported by:
 
 <div class="node">
   <a name="scanner"></a>
-  <a target="code" href="/home/hidka/project/inotify/scanner.py" type="text/plain"><tt>scanner</tt></a>
+  <a target="code" href="/home/hidka/project/inotify/app/scanner.py" type="text/plain"><tt>scanner</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#db">db</a>
@@ -16632,6 +16659,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#db">db</a>
+ &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#sqlite3">sqlite3</a>
  &#8226;   <a href="#sqlite3.__main__">sqlite3.__main__</a>
  &#8226;   <a href="#sqlite3.dbapi2">sqlite3.dbapi2</a>
@@ -18533,6 +18561,7 @@ imported by:
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#http.server">http.server</a>
  &#8226;   <a href="#mimetypes">mimetypes</a>
+ &#8226;   <a href="#moviepilot">moviepilot</a>
  &#8226;   <a href="#nturl2path">nturl2path</a>
  &#8226;   <a href="#pathlib">pathlib</a>
  &#8226;   <a href="#pydoc">pydoc</a>
@@ -19858,7 +19887,8 @@ imported by:
   <a target="code" href="/home/hidka/project/inotify/.venv/lib/python3.12/site-packages/watchdog/__init__.py" type="text/plain"><tt>watchdog</tt></a>
 <span class="moduletype">Package</span>  <div class="import">
 imported by:
-    <a href="#watchdog.events">watchdog.events</a>
+    <a href="#main.py">main.py</a>
+ &#8226;   <a href="#watchdog.events">watchdog.events</a>
  &#8226;   <a href="#watchdog.observers">watchdog.observers</a>
  &#8226;   <a href="#watchdog.utils">watchdog.utils</a>
 
@@ -20290,7 +20320,7 @@ imported by:
 
 <div class="node">
   <a name="watcher"></a>
-  <a target="code" href="/home/hidka/project/inotify/watcher.py" type="text/plain"><tt>watcher</tt></a>
+  <a target="code" href="/home/hidka/project/inotify/app/watcher.py" type="text/plain"><tt>watcher</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#db">db</a>

@@ -2,11 +2,11 @@
 
 
 a = Analysis(
-    ['main.py'],
-    pathex=[],
+    ['app/main.py'],
+    pathex=['app'],
     binaries=[],
-    datas=[],
-    hiddenimports=[],
+    datas=[('app', 'app')],
+    hiddenimports=['watchdog', 'watchdog.observers', 'watchdog.events', 'sqlite3', 'argparse', 'signal', 'time', 'os', 'sys', 'typing'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

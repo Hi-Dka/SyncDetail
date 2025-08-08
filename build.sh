@@ -1,36 +1,65 @@
 #!/bin/bash
 
+set -e  # 遇到错误时退出
+
 echo "Building inotify-indexer executable..."
 
-# Method 1: Using PyInstaller (creates standalone executable)
-if command -v pyinstaller &> /dev/null; then
-    echo "Building with PyInstaller..."
-    pyinstaller --onefile --name inotify-indexer main.py
-    echo "Executable created at: dist/inotify-indexer"
+# 检查是否存在虚拟环境
+if [ ! -d ".venv" ]; then
+    echo "Error: Virtual environment not found. Please run setup_venv.sh first."
+    exit 1
 fi
 
-# Method 2: Using setuptools (creates installable package)
-echo "Building with setuptools..."
-python -m build
+# 激活虚拟环境
+echo "Activating virtual environment..."
+source .venv/bin/activate
 
-# Method 3: Create a simple launcher script
-echo "Creating launcher script..."
-cat > inotify-indexer << 'EOF'
-#!/usr/bin/env python3
-import os
-import sys
+# 安装 PyInstaller（如果未安装）
+if ! pip list | grep -q "pyinstaller"; then
+    echo "Installing PyInstaller..."
+    pip install pyinstaller
+fi
 
-# Add the script directory to Python path
-script_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, script_dir)
+# 清理之前的构建
+echo "Cleaning previous builds..."
+rm -rf build/ dist/ *.spec
 
-# Import and run main
-from main import main
-if __name__ == "__main__":
-    main()
-EOF
+# 使用 PyInstaller 创建单独的可执行文件
+echo "Building with PyInstaller..."
+pyinstaller \
+    --onefile \
+    --name inotify-indexer \
+    --add-data "app:app" \
+    --paths app \
+    --hidden-import=watchdog \
+    --hidden-import=watchdog.observers \
+    --hidden-import=watchdog.events \
+    --hidden-import=sqlite3 \
+    --hidden-import=argparse \
+    --hidden-import=signal \
+    --hidden-import=time \
+    --hidden-import=os \
+    --hidden-import=sys \
+    --hidden-import=typing \
+    --console \
+    app/main.py
 
-chmod +x inotify-indexer
-echo "Launcher script created: ./inotify-indexer"
+# 检查构建结果
+if [ -f "dist/inotify-indexer" ]; then
+    echo "✅ Successfully built executable: dist/inotify-indexer"
+    echo "File size: $(du -h dist/inotify-indexer | cut -f1)"
+    
+    # 测试可执行文件
+    echo "Testing executable..."
+    ./dist/inotify-indexer --help
+    
+    echo ""
+    echo "🎉 Build complete! You can now run: ./dist/inotify-indexer"
+    echo "Or copy the executable to any location and run it standalone."
+else
+    echo "❌ Build failed! Executable not found in dist/"
+    exit 1
+fi
 
-echo "Build complete!"
+# 停用虚拟环境
+deactivate
